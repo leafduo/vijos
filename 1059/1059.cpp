@@ -1,6 +1,6 @@
 //vijos 1059
 
-//#define DEBUG
+#define DEBUG
 
 #include <iostream>
 #include <bitset>
