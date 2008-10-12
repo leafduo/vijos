@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>~/OI/vijos/1312/AC.cpp.html</title>
+<meta name="Generator" content="Vim/7.1">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body bgcolor="#ffffff" text="#000000"><font face="monospace">
+<font color="#ffff00">&nbsp;1 </font><font color="#8080ff">//终于AC了</font><br>
+<font color="#ffff00">&nbsp;2 </font><font color="#8080ff">//DP的时候注意不要调用未知量</font><br>
+<font color="#ffff00">&nbsp;3 </font><font color="#8080ff">//还有 be careful</font><br>
+<font color="#ffff00">&nbsp;4 </font><br>
+<font color="#ffff00">&nbsp;5 </font><font color="#ff40ff">#include </font><font color="#ff6060">&lt;iostream&gt;</font><br>
+<font color="#ffff00">&nbsp;6 </font><br>
+<font color="#ffff00">&nbsp;7 </font><font color="#ffff00">using</font>&nbsp;<font color="#00ff00">namespace</font>&nbsp;std;<br>
+<font color="#ffff00">&nbsp;8 </font><br>
+<font color="#ffff00">&nbsp;9 </font><font color="#ff40ff">#define fin cin</font><br>
+<font color="#ffff00">10 </font><font color="#ff40ff">#define fout cout</font><br>
+<font color="#ffff00">11 </font><br>
+<font color="#ffff00">12 </font><font color="#00ff00">const</font>&nbsp;<font color="#00ff00">int</font>&nbsp;maxn=<font color="#ff6060">100</font>;<br>
+<font color="#ffff00">13 </font><br>
+<font color="#ffff00">14 </font><font color="#00ff00">int</font>&nbsp;data[maxn*<font color="#ff6060">2</font>];<br>
+<font color="#ffff00">15 </font><font color="#00ff00">int</font>&nbsp;n;<br>
+<font color="#ffff00">16 </font><font color="#00ff00">int</font>&nbsp;f[maxn*<font color="#ff6060">2</font>][maxn*<font color="#ff6060">1</font>];<br>
+<font color="#ffff00">17 </font><br>
+<font color="#ffff00">18 </font><font color="#00ff00">void</font>&nbsp;input()<br>
+<font color="#ffff00">19 </font>{<br>
+<font color="#ffff00">20 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memset(data,<font color="#ff6060">0</font>,<font color="#ffff00">sizeof</font>(<font color="#00ff00">int</font>)*<font color="#ff6060">2</font>*n);<br>
+<font color="#ffff00">21 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memset(f,<font color="#ff6060">0</font>,<font color="#ffff00">sizeof</font>(<font color="#00ff00">int</font>)*n*n*<font color="#ff6060">4</font>);<br>
+<font color="#ffff00">22 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fin&gt;&gt;n;<br>
+<font color="#ffff00">23 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">for</font>&nbsp;(<font color="#00ff00">int</font>&nbsp;i=<font color="#ff6060">0</font>;i&lt;n;i++)<br>
+<font color="#ffff00">24 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fin&gt;&gt;data[i];<br>
+<font color="#ffff00">25 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memcpy(data+n,data,<font color="#ffff00">sizeof</font>(<font color="#00ff00">int</font>)*n);<br>
+<font color="#ffff00">26 </font>}<br>
+<font color="#ffff00">27 </font><br>
+<font color="#ffff00">28 </font><font color="#00ff00">inline</font>&nbsp;<font color="#00ff00">int</font>&nbsp;energy(<font color="#00ff00">int</font>&nbsp;a,<font color="#00ff00">int</font>&nbsp;b,<font color="#00ff00">int</font>&nbsp;c)<br>
+<font color="#ffff00">29 </font>{<br>
+<font color="#ffff00">30 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">return</font>&nbsp;data[a]*data[(b+<font color="#ff6060">1</font>)%n]*data[(c+<font color="#ff6060">1</font>)%n];<br>
+<font color="#ffff00">31 </font>}<br>
+<font color="#ffff00">32 </font><br>
+<font color="#ffff00">33 </font><font color="#00ff00">inline</font>&nbsp;<font color="#00ff00">int</font>&nbsp;max(<font color="#00ff00">int</font>&nbsp;a,<font color="#00ff00">int</font>&nbsp;b)<br>
+<font color="#ffff00">34 </font>{<br>
+<font color="#ffff00">35 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">return</font>&nbsp;a&gt;b?a:b;<br>
+<font color="#ffff00">36 </font>}<br>
+<font color="#ffff00">37 </font><br>
+<font color="#ffff00">38 </font><font color="#00ff00">int</font>&nbsp;DP()<br>
+<font color="#ffff00">39 </font>{<br>
+<font color="#ffff00">40 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#00ff00">int</font>&nbsp;result=<font color="#ff6060">0</font>;<br>
+<font color="#ffff00">41 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">for</font>&nbsp;(<font color="#00ff00">int</font>&nbsp;j=<font color="#ff6060">0</font>;j&lt;<font color="#ff6060">2</font>*n;j++)<br>
+<font color="#ffff00">42 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">for</font>&nbsp;(<font color="#00ff00">int</font>&nbsp;i=<font color="#ff6060">0</font>;i&lt;<font color="#ff6060">2</font>*n;i++)<br>
+<font color="#ffff00">43 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">for</font>&nbsp;(<font color="#00ff00">int</font>&nbsp;k=<font color="#ff6060">0</font>;k&lt;j;k++)<br>
+<font color="#ffff00">44 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+<font color="#ffff00">45 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">if</font>&nbsp;(i+j&gt;<font color="#ff6060">2</font>*n)<br>
+<font color="#ffff00">46 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">break</font>;<br>
+<font color="#ffff00">47 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f[i][i+j]=max(f[i][i+j],f[i][i+k]+f[i+k+<font color="#ff6060">1</font>][i+j]+energy(i,i+k,i+j));<br>
+<font color="#ffff00">48 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<font color="#ffff00">49 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">for</font>&nbsp;(<font color="#00ff00">int</font>&nbsp;i=<font color="#ff6060">0</font>;i&lt;n;i++)<br>
+<font color="#ffff00">50 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result=max(result,f[i][i+n-<font color="#ff6060">1</font>]);<br>
+<font color="#ffff00">51 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">return</font>&nbsp;result;<br>
+<font color="#ffff00">52 </font>}<br>
+<font color="#ffff00">53 </font><br>
+<font color="#ffff00">54 </font><font color="#00ff00">int</font>&nbsp;main()<br>
+<font color="#ffff00">55 </font>{<br>
+<font color="#ffff00">56 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input();<br>
+<font color="#ffff00">57 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fout&lt;&lt;DP()&lt;&lt;endl;<br>
+<font color="#ffff00">58 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ffff00">return</font>&nbsp;<font color="#ff6060">0</font>;<br>
+<font color="#ffff00">59 </font>}<br>
+</font></body>
+</html>
