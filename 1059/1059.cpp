@@ -31,7 +31,7 @@ void input() {
 	cin>>N;
 	int i;
 	int Max=0;
-	for (int k=0;k<N;k++) {
+	for (int k=1;k<=N;k++) {
 		for (i=0;;i++) {
 			int temp;
 			cin>>temp;
@@ -79,8 +79,8 @@ unsigned status() {
 #ifdef DEBUG
 void print() {
     for (int i=1;i<=N;i++) {
-        for (int j=0;j<=MAX*MAX;j++)
-            cout<<f[i].test(j)<<" ";
+        for (int j=0;j<=length[i];j++)
+            cout<<source[i][j]<<" ";
         cout<<endl;
     }
 }
