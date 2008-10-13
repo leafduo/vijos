@@ -22,43 +22,49 @@ const unsigned MAX=100;
 
 
 bitset<(MAX+1u)*(MAX+1u)> f[MAX+1u];
+int source[MAX+1][MAX];
+int length[MAX+1];
 unsigned N;
 unsigned umax=MAX*MAX;
 
+void input() {
+	cin>>N;
+	int i;
+	int Max=0;
+	for (int k=0;k<N;k++) {
+		for (i=0;;i++) {
+			int temp;
+			cin>>temp;
+			if (temp!=-1) {
+				Max+=temp;
+				source[k][i]=temp;
+			}
+			else
+				break;
+		}
+		if (Max<umax)
+			umax=Max;
+		length[k]=i;
+	}
+}
+
+
 void DP() {
-    cin>>N;
-    for (int k=1;k<=N;k++) {
-        int source[MAX];
-        unsigned m;
-        int temp;
-        int i;
-        for (i=0;;i++) {
-            cin>>temp;
-            if (temp!=-1)
-                source[i]=temp;
-            else
-                break;
-        }
-        m=i;
-        int Max=0;
-        for (int i=0;i<m;i++)
-            Max+=source[i];
-        if (Max<umax)
-            umax=Max;
-        f[k].set(0);
-        for (int j=0;j<m;j++)
-            for (int i=umax;i>=0;i--) {
-                if (i-source[j]>=0&&f[k].test(i-source[j])) {
-                    f[k].set(i);
-                    //break;
-                }
-            }
-    }
+	for (int k=1;k<=N;k++) {
+		f[k].set(0);
+		for (int j=0;j<length[k];j++)
+			for (int i=umax;i>=0;i--) {
+				if (i-source[k][j]>=0&&f[k].test(i-source[k][j])) {
+					f[k].set(i);
+					//break;
+				}
+			}
+	}
 }
 
 inline bool isOK(unsigned n) {
-    for (int i=1;i<=N;i++)
-        if (!f[i].test(n))
+	for (int i=1;i<=N;i++)
+		if (!f[i].test(n))
             return false;
     return true;
 }
