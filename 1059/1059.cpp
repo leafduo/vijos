@@ -87,6 +87,7 @@ void print() {
 #endif
 
 int main() {
+    input();
     DP();
     cout<<status()<<endl;
 #ifdef DEBUG
