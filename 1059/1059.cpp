@@ -1,5 +1,7 @@
 //vijos 1059
 
+//AC 向 vijos 抗议！
+
 #define DEBUG
 
 #include <iostream>
