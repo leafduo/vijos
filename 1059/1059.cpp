@@ -21,7 +21,7 @@ ofstream fout("1059.out");
 const unsigned MAX=100;
 
 
-int f[MAX+1][MAX+1];
+int f[MAX+1][(MAX+1)*(MAX+1)];
 int source[MAX+1][MAX];
 int length[MAX+1];
 unsigned N;
