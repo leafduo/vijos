@@ -21,13 +21,15 @@ ofstream fout("1059.out");
 const unsigned MAX=100;
 
 
-bitset<(MAX+1u)*(MAX+1u)> f[MAX+1u];
+//bitset<(MAX+1u)*(MAX+1u)> f[MAX+1u];l
+int f[MAX+1][MAX+1];
 int source[MAX+1][MAX];
 int length[MAX+1];
 unsigned N;
 unsigned umax=MAX*MAX;
 
 void input() {
+	memset(f,0,sizeof(int)*(MAX+1)*(MAX+1));
 	cin>>N;
 	int i;
 	int Max=0;
@@ -51,11 +53,11 @@ void input() {
 
 void DP() {
 	for (int k=1;k<=N;k++) {
-		f[k].set(0);
+		f[k][0]=1;
 		for (int j=0;j<length[k];j++)
 			for (int i=umax;i>=0;i--) {
-				if (i-source[k][j]>=0&&f[k].test(i-source[k][j])) {
-					f[k].set(i);
+				if (i-source[k][j]>=0&&f[k][i-source[k][j]]) {
+					f[k][i]=1;
 					//break;
 				}
 			}
@@ -64,7 +66,7 @@ void DP() {
 
 inline bool isOK(unsigned n) {
 	for (int i=1;i<=N;i++)
-		if (!f[i].test(n))
+		if (!f[i][n])
             return false;
     return true;
 }
