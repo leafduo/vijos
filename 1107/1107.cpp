@@ -5,6 +5,7 @@
 
 #ifdef DEBUG
 #include <fstream>
+#include <cassert>
 using std::ifstream;
 using std::ofstream;
 ifstream fin("1107.in");
@@ -34,24 +35,34 @@ void input() {
         for (int j=1;j<=R;++j) {
             char temp;
             cin.get(temp);
+            if ('\n'==temp)
+                cin.get(temp);
             if ('.'==temp)
                 map[i][j]=true;
         }
+#ifdef DEBUG
+    for (int i=1;i<=C;++i) {
+        for (int j=1;j<=R;++j)
+            cout<<map[i][j];
+        cout<<endl;
+    }
+#endif
 }
 
 void DFS(int x,int y,int depth) {
     visited[x][y]=true;
-    startx=x;
-    starty=y;
-    if (depth>maxDep)
-        maxDep=depth;
-    if (x+1<=C&&map[x+1][y]&&visited[x][y])
-        DFS(x+1,y,depth+1);
-    if (y+1<=R&&map[x][y+1]&&visited[x][y])
+   if (depth>maxDep) {
+       maxDep=depth;
+       startx=x;
+       starty=y;
+   }
+   if (x+1<=C&&map[x+1][y]&&!visited[x+1][y])
+       DFS(x+1,y,depth+1);
+   if (y+1<=R&&map[x][y+1]&&!visited[x][y+1])
         DFS(x,y+1,depth+1);
-    if (x-1>=1&&map[x-1][y]&&visited[x][y])
+    if (x-1>=1&&map[x-1][y]&&!visited[x-1][y])
         DFS(x-1,y,depth+1);
-    if (y-1>=1&&map[x][y-1]&&visited[x][y])
+    if (y-1>=1&&map[x][y-1]&&!visited[x][y-1])
         DFS(x,y-1,depth+1);
 }
 
@@ -63,17 +74,20 @@ int main() {
     for (i=1;i<=C;++i)
         for (j=1;j<=R;++j)
             if (map[i][j]) {
-                flag=true;
-                break;
+                DFS(i,j,0);
+                maxDep=0;
+                memset(visited,0,sizeof(bool)*(max+1)*(max+1));
+#ifdef DEBUG
+                cout<<startx<<','<<starty<<endl;
+#endif
+                DFS(startx,starty,0);
+#ifdef DEBUG
+                cout<<startx<<','<<starty<<endl;
+#endif
+ 
+                cout<<maxDep<<endl;
+                return 0;
             }
-    if (!flag) {
-        cout<<0<<endl;
-        return 0;
-    }
-    DFS(i,j,0);
-    maxDep=0;
-    memset(visited,0,sizeof(bool)*(max+1)*(max+1));
-    DFS(startx,starty,0);
-    cout<<maxDep<<endl;
+    cout<<0<<endl;
     return 0;
 }
